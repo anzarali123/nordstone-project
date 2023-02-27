@@ -3,7 +3,7 @@ import HashLoader from "react-spinners/HashLoader";
 const SplashScreen = ({ setShowSplash }) => {
   setTimeout(() => {
     setShowSplash(false);
-  }, 1000);
+  }, 5000);
 
   return (
     <div
