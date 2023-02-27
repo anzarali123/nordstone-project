@@ -6,9 +6,11 @@ import { setDoc, serverTimestamp, doc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { UserContext } from "../../context/userContext";
 import { toast } from "react-toastify";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const { setUser } = useContext(UserContext);
   const [formData, setFormData] = useState({
     name: "",
@@ -29,6 +31,7 @@ const SignUp = () => {
       toast.error("Password does not match");
       return;
     }
+    setLoading(true);
     try {
       const response = await createUserWithEmailAndPassword(
         auth,
@@ -48,6 +51,7 @@ const SignUp = () => {
     } catch (error) {
       toast.error(error.message);
     }
+    setLoading(false);
   };
 
   return (
@@ -120,14 +124,15 @@ const SignUp = () => {
             onChange={handleChange}
             required
           />
-          <Button
+          <LoadingButton
             sx={{ marginTop: "1rem" }}
             variant="contained"
             color="primary"
             type="submit"
+            loading={loading}
           >
             Sign up
-          </Button>
+          </LoadingButton>
         </form>
         <p style={{ marginTop: "1rem" }}>
           Already have an account?{" "}

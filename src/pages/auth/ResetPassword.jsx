@@ -1,19 +1,21 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleChange = (e) => {
     setEmail(e.target.value);
   };
   const handleResetPassword = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
       const response = await sendPasswordResetEmail(auth, email);
       console.log(response);
@@ -23,6 +25,7 @@ const ResetPassword = () => {
     } catch (error) {
       toast.error(error.message);
     }
+    setLoading(false);
   };
   return (
     <Box
@@ -66,14 +69,15 @@ const ResetPassword = () => {
             required
           />
 
-          <Button
+          <LoadingButton
+            loading={loading}
             sx={{ marginTop: "1rem" }}
             variant="contained"
             color="primary"
             type="submit"
           >
             Reset Password
-          </Button>
+          </LoadingButton>
         </form>
         <Box
           sx={{

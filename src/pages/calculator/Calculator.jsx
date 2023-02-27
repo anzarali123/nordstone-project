@@ -10,26 +10,33 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const Calculator = () => {
   const [number1, setNumber1] = useState("");
   const [number2, setNumber2] = useState("");
   const [operation, setOperation] = useState("");
   const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/calculate", {
-        number1,
-        number2,
-        operation,
-      });
+      const response = await axios.post(
+        "https://nordstone-project-backend1.onrender.com/calculate",
+        {
+          number1,
+          number2,
+          operation,
+        }
+      );
       console.log(response.data);
       setResult(response.data);
     } catch (error) {
       console.error(error);
     }
+    setLoading(false);
   };
 
   return (
@@ -46,15 +53,15 @@ const Calculator = () => {
           value={number1}
           onChange={(event) => setNumber1(Number(event.target.value))}
           label="Number 1"
-          margin="normal"
           variant="outlined"
+          sx={{ margin: "1rem" }}
         />
         <TextField
           value={number2}
           onChange={(event) => setNumber2(Number(event.target.value))}
           label="Number 2"
-          margin="normal"
           variant="outlined"
+          sx={{ margin: "1rem" }}
         />
         <FormControl sx={{ margin: "1rem", width: "200px" }}>
           <InputLabel id="operation-label">Operation</InputLabel>
@@ -62,7 +69,6 @@ const Calculator = () => {
             labelId="operation-label"
             value={operation}
             onChange={(event) => setOperation(event.target.value)}
-            margin="normal"
             variant="outlined"
           >
             <MenuItem value="add">Add</MenuItem>
@@ -71,9 +77,14 @@ const Calculator = () => {
             <MenuItem value="divide">Divide</MenuItem>
           </Select>
         </FormControl>
-        <Button type="submit" variant="contained" color="primary">
+        <LoadingButton
+          loading={loading}
+          type="submit"
+          variant="contained"
+          color="primary"
+        >
           Calculate
-        </Button>
+        </LoadingButton>
         <Box>
           <Typography variant="h6" sx={{ marginTop: "1rem" }}>
             {result}

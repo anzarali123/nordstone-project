@@ -6,9 +6,11 @@ import { auth } from "../../firebase/firebase";
 import { UserContext } from "../../context/userContext";
 import { useContext } from "react";
 import { toast } from "react-toastify";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate("/");
   const handleChange = (event) => {
@@ -22,7 +24,8 @@ const Login = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    // Submit form data here
+
+    setLoading(true);
     const { email, password } = formData;
 
     try {
@@ -38,6 +41,7 @@ const Login = () => {
     } catch (error) {
       toast.error(error.message);
     }
+    setLoading(false);
   };
 
   return (
@@ -91,14 +95,15 @@ const Login = () => {
             onChange={handleChange}
             required
           />
-          <Button
+          <LoadingButton
             sx={{ marginTop: "1rem" }}
             variant="contained"
             color="primary"
             type="submit"
+            loading={loading}
           >
             Log in
-          </Button>
+          </LoadingButton>
           <Button
             sx={{ marginTop: "1rem" }}
             variant="contained"

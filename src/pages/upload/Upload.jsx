@@ -4,11 +4,13 @@ import { Avatar, Button, Grid, Typography } from "@mui/material";
 import { storage } from "../../firebase/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { toast } from "react-toastify";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const UploadProfilePicture = () => {
   const { user } = useContext(UserContext);
   const [image, setImage] = useState(null);
   const [url, setUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchImage = async () => {
     try {
@@ -31,6 +33,7 @@ const UploadProfilePicture = () => {
   };
 
   const handleUpload = async () => {
+    setLoading(true);
     try {
       const imageRef = ref(storage, `images/${user.uid}`);
       await uploadBytes(imageRef, image);
@@ -40,6 +43,7 @@ const UploadProfilePicture = () => {
     } catch (error) {
       toast.error(error.message);
     }
+    setLoading(false);
   };
 
   return (
@@ -74,9 +78,14 @@ const UploadProfilePicture = () => {
         </Button>
       </label>
       {image && (
-        <Button variant="contained" color="secondary" onClick={handleUpload}>
+        <LoadingButton
+          variant="contained"
+          loading={loading}
+          color="secondary"
+          onClick={handleUpload}
+        >
           Upload Picture
-        </Button>
+        </LoadingButton>
       )}
     </Grid>
   );

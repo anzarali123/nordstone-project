@@ -4,8 +4,10 @@ import { UserContext } from "../../context/userContext";
 import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { toast } from "react-toastify";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const WritePost = () => {
+  const [loading, setLoading] = useState(false);
   const { user } = useContext(UserContext);
   const [text, setText] = useState("");
   const [savedTexts, setSavedTexts] = useState([]);
@@ -15,6 +17,7 @@ const WritePost = () => {
   };
 
   const handleSaveClick = async () => {
+    setLoading(true);
     try {
       const docRef = doc(db, "users", user.uid);
 
@@ -28,6 +31,7 @@ const WritePost = () => {
       toast.error("Could not add text");
       console.log(error);
     }
+    setLoading(false);
   };
 
   const fetchTexts = async () => {
@@ -62,9 +66,13 @@ const WritePost = () => {
           padding: "1rem",
         }}
       />
-      <Button variant="contained" onClick={handleSaveClick}>
+      <LoadingButton
+        loading={loading}
+        variant="contained"
+        onClick={handleSaveClick}
+      >
         Save Text
-      </Button>
+      </LoadingButton>
       {savedTexts.length
         ? savedTexts.map((savedText) => {
             return (
